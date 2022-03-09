@@ -20,17 +20,19 @@
 
 - name: install | pull amazon-efs-utils
   git:
-    repo: 'https://github.com/aws/efs-utils'
-    dest: /tmp/efs-utils
+    repo: "{{ aws_efs_utils_repo_url }}"
+    dest: "{{ aws_efs_utils_dest_dir }}"
     version: "{{ aws_efs_utils_version }}"
+  args:
+    creates: "{{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
 
 - name: install | build amazon-efs-utils
-  command: bash build-deb.sh || /bin/true
+  command: "{{ aws_efs_utils_dest_dir }}/build-deb.sh"
   args:
-    chdir: /tmp/efs-utils
+    chdir: "{{ aws_efs_utils_dest_dir }}"
 
 - name: install | find amazon-efs-utils built package
-  shell: "ls /tmp/efs-utils/build/amazon-efs-utils-*.deb"
+  shell: "ls {{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
   register: package
 
 - name: install | amazon-efs-utils
@@ -48,6 +50,6 @@
     name: "{{ efs_mount_dir }}"
     src: "{{ efs_file_system_id }}"
     fstype: efs
-    opts: lookupcache=pos
-    state: mounted
+    opts: "{{ efs_mount_opts }}"
+    state: "{{ mount_state | default('mounted') }}"
   tags: notest

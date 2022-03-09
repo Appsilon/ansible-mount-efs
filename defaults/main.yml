@@ -1,6 +1,12 @@
 # defaults file
 ---
 
-aws_efs_utils_version: v1.31.3
-efs_mount_dir: /efsmnt
+# AWS EFS utils tool
+aws_efs_utils_version: "v1.31.3"
+aws_efs_utils_repo_url: "https://github.com/aws/efs-utils"
+aws_efs_utils_dest_dir: "/tmp/efs-utils"
+
+# Mount EFS vars
+efs_mount_dir: "/efsmnt"
+efs_mount_opts: "lookupcache=pos"
 efs_file_system_id:
