@@ -1,2 +1,6 @@
 # defaults file
 ---
+
+aws_efs_utils_version: v1.31.3
+efs_mount_dir: /efsmnt
+efs_file_system_id:

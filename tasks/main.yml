@@ -1,10 +1,53 @@
 # tasks file
 ---
+
 - name: include variables
   include_vars: "{{ item }}"
   with_first_found:
     - "_{{ ansible_distribution_release }}.yml"
     - "_{{ ansible_distribution | lower }}.yml"
     - _default.yml
-  tags:
-    - configuration
+
+- name: install | requirements
+  apt:
+    name: "{{ item }}"
+    state: "{{ apt_install_state | default('latest') }}"
+    cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
+    update_cache: true
+  with_items:
+    - binutils
+    - git
+
+- name: install | pull amazon-efs-utils
+  git:
+    repo: 'https://github.com/aws/efs-utils'
+    dest: /tmp/efs-utils
+    version: "{{ aws_efs_utils_version }}"
+
+- name: install | build amazon-efs-utils
+  command: bash build-deb.sh || /bin/true
+  args:
+    chdir: /tmp/efs-utils
+
+- name: install | find amazon-efs-utils built package
+  shell: "ls /tmp/efs-utils/build/amazon-efs-utils-*.deb"
+  register: package
+
+- name: install | amazon-efs-utils
+  apt:
+    deb: "{{ package.stdout }}"
+
+- name: mount | ensure mount directory exists
+  file:
+    path: "{{ efs_mount_dir }}"
+    mode: 0755
+    state: directory
+
+- name: mount | ensure EFS volume is mounted
+  mount:
+    name: "{{ efs_mount_dir }}"
+    src: "{{ efs_file_system_id }}"
+    fstype: efs
+    opts: lookupcache=pos
+    state: mounted
+  tags: notest
