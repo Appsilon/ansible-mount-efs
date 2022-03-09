@@ -20,13 +20,12 @@
     repo: "{{ aws_efs_utils_repo_url }}"
     dest: "{{ aws_efs_utils_dest_dir }}"
     version: "{{ aws_efs_utils_version }}"
-  args:
-    creates: "{{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
 
 - name: install | build amazon-efs-utils
   command: "{{ aws_efs_utils_dest_dir }}/build-deb.sh"
   args:
     chdir: "{{ aws_efs_utils_dest_dir }}"
+    creates: "{{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
 
 - name: install | find amazon-efs-utils built package
   shell: "ls {{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
