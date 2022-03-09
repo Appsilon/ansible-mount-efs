@@ -28,12 +28,14 @@
     creates: "{{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
 
 - name: install | find amazon-efs-utils built package
-  shell: "ls {{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
+  find:
+    paths: "{{ aws_efs_utils_dest_dir }}/build/"
+    patterns: "amazon-efs-utils*deb"
   register: package
 
 - name: install | amazon-efs-utils
   apt:
-    deb: "{{ package.stdout }}"
+    deb: "{{ package.files[0].path }}"
 
 - name: mount | ensure mount directory exists
   file:
