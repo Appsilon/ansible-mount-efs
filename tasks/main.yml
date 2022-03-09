@@ -10,13 +10,10 @@
 
 - name: install | requirements
   apt:
-    name: "{{ item }}"
+    name: "{{ aws_efs_utils_dependencies }}"
     state: "{{ apt_install_state | default('latest') }}"
     cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
     update_cache: true
-  with_items:
-    - binutils
-    - git
 
 - name: install | pull amazon-efs-utils
   git:
