@@ -2,50 +2,50 @@
 ---
 
 - name: include variables
-  include_vars: "{{ item }}"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "_{{ ansible_distribution_release }}.yml"
     - "_{{ ansible_distribution | lower }}.yml"
     - _default.yml
 
 - name: install | requirements
-  apt:
+  ansible.builtin.apt:
     name: "{{ aws_efs_utils_dependencies }}"
     state: "{{ apt_install_state | default('latest') }}"
     cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
     update_cache: true
 
 - name: install | pull amazon-efs-utils
-  git:
+  ansible.builtin.git:
     repo: "{{ aws_efs_utils_repo_url }}"
     dest: "{{ aws_efs_utils_dest_dir }}"
     version: "{{ aws_efs_utils_version }}"
 
 - name: install | build amazon-efs-utils
-  command: "{{ aws_efs_utils_dest_dir }}/build-deb.sh"
+  ansible.builtin.command: "{{ aws_efs_utils_dest_dir }}/build-deb.sh"
   args:
     chdir: "{{ aws_efs_utils_dest_dir }}"
     creates: "{{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
 
 - name: install | find amazon-efs-utils built package
-  find:
+  ansible.builtin.find:
     paths: "{{ aws_efs_utils_dest_dir }}/build/"
     patterns: "amazon-efs-utils*deb"
   register: package
 
 - name: install | amazon-efs-utils
-  apt:
+  ansible.builtin.apt:
     deb: "{{ package.files[0].path }}"
 
 - name: mount | ensure mount directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ efs_mount_dir }}"
     mode: 0755
     owner: "{{ efs_mount_dir_owner }}"
     state: directory
 
 - name: mount | ensure EFS volume is mounted
-  mount:
+  ansible.builtin.mount:
     name: "{{ efs_mount_dir }}"
     src: "{{ efs_file_system_id }}"
     fstype: efs
