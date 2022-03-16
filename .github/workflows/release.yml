@@ -1,12 +1,13 @@
 ---
 name: Release
-'on':
+
+on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
-
   release:
     name: Release
     runs-on: ubuntu-latest
