@@ -41,6 +41,7 @@
   file:
     path: "{{ efs_mount_dir }}"
     mode: 0755
+    owner: "{{ efs_mount_dir_owner }}"
     state: directory
 
 - name: mount | ensure EFS volume is mounted

@@ -9,5 +9,6 @@ aws_efs_utils_dependencies: ["binutils", "git"]
 
 # Mount EFS vars
 efs_mount_dir: "/efsmnt"
+efs_mount_dir_owner: "root"
 efs_mount_opts: "lookupcache=pos"
 efs_file_system_id:
