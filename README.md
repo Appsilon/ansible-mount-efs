@@ -9,20 +9,18 @@ Role used to mount EFS on EC2 instances.
 Requirements
 ------------
 
-* `curl` (will be installed)
+* `binutils`, `git` (will be installed)
 
 Role Variables
 --------------
 
-* `aws_region`
-* `efs_az`
-* `efs_mount_dir`
-* `efs_file_system_id`
+* `efs_mount_dir` [default: `/efsmnt`]: Directory name where EFS will be mounted
+* `efs_file_system_id`: EFS filesystem ID to mount
 
 Dependencies
 ------------
 
-None
+None.
 
 Example Playbook
 ----------------

@@ -1,54 +1,56 @@
 # tasks file
 ---
 
-- name: include variables
+- name: "include variables"
   ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
     - "_{{ ansible_distribution_release }}.yml"
     - "_{{ ansible_distribution | lower }}.yml"
     - _default.yml
 
-- name: install | requirements
+- name: "install | requirements"
   ansible.builtin.apt:
     name: "{{ aws_efs_utils_dependencies }}"
     state: "{{ apt_install_state | default('latest') }}"
     cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
     update_cache: true
 
-- name: install | pull amazon-efs-utils
+- name: "install | pull amazon-efs-utils"
   ansible.builtin.git:
     repo: "{{ aws_efs_utils_repo_url }}"
     dest: "{{ aws_efs_utils_dest_dir }}"
     version: "{{ aws_efs_utils_version }}"
 
-- name: install | build amazon-efs-utils
+- name: "install | build amazon-efs-utils"
   ansible.builtin.command: "{{ aws_efs_utils_dest_dir }}/build-deb.sh"
   args:
     chdir: "{{ aws_efs_utils_dest_dir }}"
     creates: "{{ aws_efs_utils_dest_dir }}/build/amazon-efs-utils*deb"
 
-- name: install | find amazon-efs-utils built package
+- name: "install | find amazon-efs-utils built package"
   ansible.builtin.find:
     paths: "{{ aws_efs_utils_dest_dir }}/build/"
     patterns: "amazon-efs-utils*deb"
   register: package
 
-- name: install | amazon-efs-utils
+- name: "install | amazon-efs-utils"
   ansible.builtin.apt:
     deb: "{{ package.files[0].path }}"
 
-- name: mount | ensure mount directory exists
+- name: "mount | ensure mount directory exists"
   ansible.builtin.file:
     path: "{{ efs_mount_dir }}"
     mode: 0755
     owner: "{{ efs_mount_dir_owner }}"
     state: directory
 
-- name: mount | ensure EFS volume is mounted
+- name: "mount | ensure EFS volume is mounted"
   ansible.builtin.mount:
     name: "{{ efs_mount_dir }}"
     src: "{{ efs_file_system_id }}"
     fstype: efs
     opts: "{{ efs_mount_opts }}"
     state: "{{ mount_state | default('mounted') }}"
-  tags: notest
+  when:
+    - efs_file_system_id is defined
+    - efs_file_system_id != ""
