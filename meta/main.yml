@@ -1,9 +1,8 @@
 # meta file
 ---
 galaxy_info:
-  namespace: appsilon
   role_name: mount_efs
-  author: Appsilon
+  author: appsilon
   company: Appsilon
   description: Mount EFS on EC2 instances with Debian-like OS
   license: MIT
