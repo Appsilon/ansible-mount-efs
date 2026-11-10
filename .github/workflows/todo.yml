@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase
-        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26  # v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
 
       - name: Raise GitHub issues for TODOs found
         uses: alstr/todo-to-issue-action@vb50288792858dfc84690dbd7c1ecf99a4a1b52b8  # 4.9.1
