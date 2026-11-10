@@ -45,7 +45,7 @@
     state: directory
 
 - name: "mount | ensure EFS volume is mounted"
-  ansible.builtin.mount:
+  ansible.posix.mount:
     name: "{{ efs_mount_dir }}"
     src: "{{ efs_file_system_id }}"
     fstype: efs
