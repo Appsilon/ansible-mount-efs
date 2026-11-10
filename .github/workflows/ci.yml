@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python 3
         uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566  # v3
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install test dependencies
         run: pip install ansible-lint[community,yamllint]
@@ -55,11 +55,14 @@ jobs:
       - name: Set up Python 3
         uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566  # v3
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install test dependencies
         run: pip install 'ansible-core${{ matrix.ansible-version }}' molecule[docker] docker
 
+      - name: Install required collections
+        run: ansible-galaxy collection install -r requirements.yml
+        
       - name: Run Molecule tests
         run: |
           molecule test
